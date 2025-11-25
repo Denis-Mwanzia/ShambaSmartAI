@@ -1,5 +1,7 @@
 # ShambaSmart AI - Setup Guide
 
+🌐 **Live Demo**: https://shambasmart-ai-896121198699.us-central1.run.app
+
 This guide will walk you through setting up ShambaSmart AI from scratch. Follow the steps in order.
 
 ## Prerequisites

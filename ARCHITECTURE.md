@@ -1,8 +1,10 @@
 # ShambaSmart AI - Architecture Documentation
 
+🌐 **Live Demo**: https://shambasmart-ai-896121198699.us-central1.run.app
+
 ## System Overview
 
-ShambaSmart AI is a multi-agent, multi-channel agricultural advisory system built for Kenyan farmers. It leverages Google Genkit, Vertex AI, and ADK to provide personalized, real-time agricultural intelligence.
+ShambaSmart AI is a multi-agent, multi-channel agricultural advisory system built for Kenyan farmers. It leverages Google Genkit, Vertex AI (Gemini 2.0), and ADK to provide personalized, real-time agricultural intelligence accessible through WhatsApp, SMS, USSD, Voice, and Web channels.
 
 ## Architecture Diagram
 
@@ -134,9 +136,13 @@ The orchestrator coordinates multiple specialized agents:
 - **Outputs**: Detailed technical information, resources
 
 #### Translation Agent
-- **Purpose**: Multi-language support
+- **Purpose**: High-quality bilingual support
 - **Inputs**: Text, source language, target language
-- **Outputs**: Translated text (English ↔ Kiswahili)
+- **Outputs**: Natural Kiswahili translations with agricultural terminology
+- **Features**: 
+  - Comprehensive agricultural vocabulary (mbolea, mbegu, mavuno, etc.)
+  - Kenyan Kiswahili expressions and idioms
+  - Preserves technical terms farmers commonly use
 
 ### 4. RAG Pipeline
 
@@ -219,14 +225,15 @@ The orchestrator coordinates multiple specialized agents:
 ## Technology Stack
 
 ### Backend
-- **Runtime**: Node.js 20
+- **Runtime**: Node.js 20+
 - **Language**: TypeScript
 - **Framework**: Express.js
 - **AI Framework**: Google Genkit
-- **AI Models**: Vertex AI (Gemini, Embeddings)
+- **AI Models**: Vertex AI Gemini 2.0 Flash
 - **Vector Store**: Vertex Matching Engine
 - **Database**: Firestore
-- **Deployment**: Cloud Run
+- **Deployment**: Google Cloud Run
+- **Caching**: In-memory response cache
 
 ### Frontend
 - **Framework**: React 18
@@ -264,13 +271,23 @@ The orchestrator coordinates multiple specialized agents:
 3. **Tracing**: Genkit tracing
 4. **Alerts**: Cloud Alerting
 
+## Current Features
+
+1. ✅ **Multi-Agent System**: 7 specialized agents working together
+2. ✅ **Multi-Channel**: WhatsApp, SMS, USSD, Voice, Web
+3. ✅ **Bilingual**: English and Kiswahili with quality translations
+4. ✅ **Location-Aware**: Geolocation for region-specific advice
+5. ✅ **Response Caching**: Fast responses for common queries
+6. ✅ **Conversation History**: Context-aware responses
+7. ✅ **Real-time Alerts**: Weather, pest, and market alerts
+
 ## Future Enhancements
 
-1. **Image Recognition**: Pest/disease from photos
-2. **Voice Input/Output**: Full voice support
+1. **Image Recognition**: Pest/disease identification from photos
+2. **Voice Input/Output**: Full voice support with STT/TTS
 3. **Offline Mode**: PWA offline capabilities
-4. **Analytics Dashboard**: Usage metrics
-5. **A/B Testing**: Response optimization
-6. **Multi-language**: More languages beyond English/Kiswahili
-7. **Integration**: More data sources (satellite, IoT)
+4. **Analytics Dashboard**: Usage metrics and insights
+5. **More Languages**: Luo, Kikuyu, Kamba, and other local languages
+6. **IoT Integration**: Soil sensors, weather stations
+7. **Satellite Data**: Crop health monitoring from imagery
 
