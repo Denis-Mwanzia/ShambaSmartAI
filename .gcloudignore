@@ -1,0 +1,15 @@
+.gcloudignore
+.git
+.gitignore
+node_modules
+.env
+.env.*
+!.env.example
+*.md
+.vscode
+.idea
+frontend
+data/sources/*.pdf
+data/sources/*.docx
+dist
+
