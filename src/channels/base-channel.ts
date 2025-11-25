@@ -65,7 +65,8 @@ export abstract class BaseChannel {
         }));
       
       // Process with agent orchestrator (with conversation history)
-      const response = await agentOrchestrator.processQuery(message.content, context, conversationHistory);
+      const preferredLanguage = message.metadata?.language || user.preferredLanguage || 'en';
+      const response = await agentOrchestrator.processQuery(message.content, context, conversationHistory, preferredLanguage);
       
       // Save outgoing message
       await databaseService.saveMessage({
