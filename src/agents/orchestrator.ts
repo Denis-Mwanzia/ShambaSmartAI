@@ -20,61 +20,79 @@ export class AgentOrchestrator {
   async processQuery(
     query: string, 
     context: UserContext,
-    conversationHistory?: Array<{ role: 'user' | 'assistant'; content: string }>
+    conversationHistory?: Array<{ role: 'user' | 'assistant'; content: string }>,
+    language: string = 'en'
   ): Promise<string> {
     try {
       // Handle simple greetings and casual conversation first
       const normalizedQuery = query.toLowerCase().trim();
       if (this.isGreeting(normalizedQuery)) {
-        return this.handleGreeting(context, conversationHistory);
+        const greeting = this.handleGreeting(context, conversationHistory);
+        // Translate greeting if Swahili
+        if (language === 'sw') {
+          return await translationAgent.translate(greeting, 'en', 'sw');
+        }
+        return greeting;
       }
       
-      // Classify intent with AI (with conversation context)
-      const intent = await this.classifyIntent(query, context, conversationHistory);
+      // If language is Swahili, translate query to English for processing
+      let processedQuery = query;
+      if (language === 'sw') {
+        processedQuery = await translationAgent.translate(query, 'sw', 'en');
+        logger.info(`Translated query from Swahili: "${query}" -> "${processedQuery}"`);
+      }
+      
+      // Classify intent with AI (with conversation context) - use translated query
+      const intent = await this.classifyIntent(processedQuery, context, conversationHistory);
       
       // Route to appropriate agent(s)
       const agentResponses: AgentResponse[] = [];
       
       // Handle greeting separately (already handled above, but double-check)
       if (intent === 'greeting') {
-        return this.handleGreeting(context, conversationHistory);
+        const greeting = this.handleGreeting(context, conversationHistory);
+        if (language === 'sw') {
+          return await translationAgent.translate(greeting, 'en', 'sw');
+        }
+        return greeting;
       }
       
-      // Primary agent based on intent
+      // Primary agent based on intent - use processedQuery (translated to English)
       if (intent.includes('crop') || intent.includes('planting') || intent.includes('harvest')) {
-        agentResponses.push(await cropAdvisorAgent.process(query, context, conversationHistory));
+        agentResponses.push(await cropAdvisorAgent.process(processedQuery, context, conversationHistory));
       }
       
       if (intent.includes('livestock') || intent.includes('cattle') || intent.includes('goat') || intent.includes('chicken')) {
-        agentResponses.push(await livestockHealthAgent.process(query, context, conversationHistory));
+        agentResponses.push(await livestockHealthAgent.process(processedQuery, context, conversationHistory));
       }
       
       if (intent.includes('pest') || intent.includes('disease') || intent.includes('symptom')) {
-        agentResponses.push(await pestDetectionAgent.process(query, context, conversationHistory));
+        agentResponses.push(await pestDetectionAgent.process(processedQuery, context, conversationHistory));
       }
       
       if (intent.includes('weather') || intent.includes('rain') || intent.includes('climate')) {
-        agentResponses.push(await climateAlertAgent.process(query, context, conversationHistory));
+        agentResponses.push(await climateAlertAgent.process(processedQuery, context, conversationHistory));
       }
       
       if (intent.includes('price') || intent.includes('market') || intent.includes('sell')) {
-        agentResponses.push(await marketIntelligenceAgent.process(query, context, conversationHistory));
+        agentResponses.push(await marketIntelligenceAgent.process(processedQuery, context, conversationHistory));
       }
       
       if (intent.includes('extension') || intent.includes('help') || intent.includes('support')) {
-        agentResponses.push(await extensionSupportAgent.process(query, context, conversationHistory));
+        agentResponses.push(await extensionSupportAgent.process(processedQuery, context, conversationHistory));
       }
       
       // If no specific agent matched and it's not a greeting, use crop advisor as default
       if (agentResponses.length === 0) {
-        agentResponses.push(await cropAdvisorAgent.process(query, context, conversationHistory));
+        agentResponses.push(await cropAdvisorAgent.process(processedQuery, context, conversationHistory));
       }
       
       // Combine responses
       const combinedResponse = this.combineResponses(agentResponses);
       
-      // Translate if needed
-      if (context.user.preferredLanguage === 'sw') {
+      // Translate if needed (use passed language parameter or user preference)
+      const targetLanguage = language || context.user.preferredLanguage || 'en';
+      if (targetLanguage === 'sw') {
         return await translationAgent.translate(combinedResponse, 'en', 'sw');
       }
       
@@ -156,14 +174,32 @@ Respond with ONLY the category name (greeting, crop, livestock, pest, weather, m
 
   private isGreeting(query: string): boolean {
     const greetings = [
+      // English
       'hello', 'hi', 'hey', 'greetings', 'good morning', 'good afternoon', 
       'good evening', 'good day', 'howdy', 'sup', 'what\'s up', 'how are you',
-      'how do you do', 'nice to meet you', 'pleased to meet you'
+      'how do you do', 'nice to meet you', 'pleased to meet you',
+      // Swahili
+      'habari', 'jambo', 'mambo', 'salama', 'shikamoo', 'hujambo', 'habari yako',
+      'habari za asubuhi', 'habari za mchana', 'habari za jioni'
     ];
     
-    // Check if query is just a greeting (very short or matches greeting patterns)
+    // Agricultural keywords that indicate NOT a greeting
+    const farmingKeywords = [
+      // English
+      'plant', 'grow', 'crop', 'maize', 'farm', 'harvest', 'pest', 'weather', 'price', 'market',
+      // Swahili
+      'panda', 'kupanda', 'lima', 'kulima', 'mahindi', 'shamba', 'mavuno', 'wadudu', 'hali', 'bei', 'soko',
+      'mbolea', 'mbegu', 'maji', 'udongo', 'zao', 'mazao', 'mifugo', 'ng\'ombe', 'kuku', 'mbuzi'
+    ];
+    
+    // If query contains farming keywords, it's NOT a greeting
+    if (farmingKeywords.some(kw => query.includes(kw))) {
+      return false;
+    }
+    
+    // Check if query is ONLY a greeting (very short and matches greeting patterns)
     if (query.length < 20) {
-      return greetings.some(greeting => query.includes(greeting));
+      return greetings.some(greeting => query === greeting || query.startsWith(greeting + ' ') || query.endsWith(' ' + greeting));
     }
     
     return false;
