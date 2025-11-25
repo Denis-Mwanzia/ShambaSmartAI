@@ -1,0 +1,21 @@
+[
+  {
+    "name": "Fall Armyworm",
+    "crop": "maize",
+    "symptoms": "Small holes in leaves, windowing effect, frass (excrement) on leaves, damage to whorl and tassel",
+    "control": "Use biological control (parasitoids), apply Bt-based insecticides, practice crop rotation, early planting, use resistant varieties"
+  },
+  {
+    "name": "Tuta absoluta",
+    "crop": "tomatoes",
+    "symptoms": "Mines in leaves, galleries in stems, damage to fruits, leaf wilting",
+    "control": "Use pheromone traps, biological control (parasitoids), apply spinosad-based insecticides, remove and destroy infested plants"
+  },
+  {
+    "name": "Aphids",
+    "crop": "general",
+    "symptoms": "Curled leaves, sticky honeydew, sooty mold, stunted growth",
+    "control": "Use neem oil, introduce beneficial insects (ladybugs), apply insecticidal soap, remove heavily infested plants"
+  }
+]
+

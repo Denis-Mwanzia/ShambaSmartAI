@@ -1,0 +1,21 @@
+[
+  {
+    "county": "Nairobi",
+    "crops": ["maize", "beans", "kale", "tomatoes"],
+    "longRains": "March-April",
+    "shortRains": "October-November"
+  },
+  {
+    "county": "Nakuru",
+    "crops": ["maize", "wheat", "potatoes", "cabbage"],
+    "longRains": "March-April",
+    "shortRains": "October-November"
+  },
+  {
+    "county": "Kisumu",
+    "crops": ["maize", "rice", "sugarcane", "cotton"],
+    "longRains": "March-May",
+    "shortRains": "September-November"
+  }
+]
+

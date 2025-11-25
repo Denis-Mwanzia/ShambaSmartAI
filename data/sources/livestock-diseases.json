@@ -1,0 +1,21 @@
+[
+  {
+    "name": "East Coast Fever",
+    "livestock": "cattle",
+    "symptoms": "High fever, swollen lymph nodes, difficulty breathing, loss of appetite",
+    "treatment": "Early treatment with parvaquone or buparvaquone, tick control, vaccination available"
+  },
+  {
+    "name": "Mastitis",
+    "livestock": "dairy cattle",
+    "symptoms": "Swollen udder, abnormal milk (clots, discoloration), reduced milk production, fever",
+    "treatment": "Antibiotic treatment, proper milking hygiene, regular udder health checks"
+  },
+  {
+    "name": "Newcastle Disease",
+    "livestock": "poultry",
+    "symptoms": "Respiratory distress, nervous signs, diarrhea, drop in egg production",
+    "treatment": "Vaccination is key prevention, no cure for infected birds, isolate and cull affected birds"
+  }
+]
+
