@@ -30,8 +30,68 @@ function App() {
   const [isTyping, setIsTyping] = useState(false);
   const [locationRequested, setLocationRequested] = useState(false);
   const [isPageTransitioning, setIsPageTransitioning] = useState(false);
+  const [language, setLanguage] = useState<'en' | 'sw'>(() => {
+    const saved = localStorage.getItem('shambasmart_language');
+    return (saved as 'en' | 'sw') || 'en';
+  });
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  // Language labels
+  const labels = {
+    en: {
+      title: 'ShambaSmart AI',
+      subtitle: "Kenya's Agricultural Advisor",
+      welcome: 'Welcome to ShambaSmart AI',
+      poweredBy: 'Powered by Google Vertex AI',
+      companion: 'Your intelligent farming companion',
+      enterPhone: 'Enter your Kenyan phone number',
+      getStarted: 'Get Started',
+      invalidPhone: 'Please enter a valid Kenyan phone number (e.g., +254700000000)',
+      quickActions: 'Quick Actions',
+      cropAdvice: 'Crop Advice',
+      weather: 'Weather',
+      marketPrices: 'Market Prices',
+      pestHelp: 'Pest Help',
+      secure: 'Secure & Private',
+      available: 'Available 24/7',
+      activeSession: 'Active Session',
+      online: 'Online',
+      startConversation: 'Start Your Conversation',
+      askAnything: 'Ask me anything about farming, crops, livestock, weather, or market prices.',
+      askPlaceholder: 'Ask your farming question...',
+      send: 'Send',
+      aiGenerated: 'Responses are AI-generated',
+      footer: 'Empowering Kenyan Farmers with AI Technology',
+    },
+    sw: {
+      title: 'ShambaSmart AI',
+      subtitle: 'Mshauri wa Kilimo wa Kenya',
+      welcome: 'Karibu ShambaSmart AI',
+      poweredBy: 'Inayoendeshwa na Google Vertex AI',
+      companion: 'Mwenzako wa kilimo mwenye akili',
+      enterPhone: 'Ingiza nambari yako ya simu ya Kenya',
+      getStarted: 'Anza Sasa',
+      invalidPhone: 'Tafadhali ingiza nambari sahihi ya simu ya Kenya (mfano, +254700000000)',
+      quickActions: 'Vitendo vya Haraka',
+      cropAdvice: 'Ushauri wa Mazao',
+      weather: 'Hali ya Hewa',
+      marketPrices: 'Bei za Soko',
+      pestHelp: 'Msaada wa Wadudu',
+      secure: 'Salama & Faragha',
+      available: 'Inapatikana 24/7',
+      activeSession: 'Kipindi Kinachoendelea',
+      online: 'Mtandaoni',
+      startConversation: 'Anza Mazungumzo Yako',
+      askAnything: 'Niulize chochote kuhusu kilimo, mazao, mifugo, hali ya hewa, au bei za soko.',
+      askPlaceholder: 'Uliza swali lako la kilimo...',
+      send: 'Tuma',
+      aiGenerated: 'Majibu yanatengenezwa na AI',
+      footer: 'Kuwawezesha Wakulima wa Kenya kwa Teknolojia ya AI',
+    },
+  };
+
+  const t = labels[language];
 
   // Validate phone number format
   const isValidPhoneNumber = (phone: string): boolean => {
@@ -168,6 +228,7 @@ function App() {
       const response = await axios.post(`${API_URL}/api/chat`, {
         phoneNumber,
         message: messageToSend,
+        language,
       });
 
       await new Promise(resolve => setTimeout(resolve, 500));
@@ -218,8 +279,8 @@ function App() {
   const quickActions = [
     { 
       icon: Leaf, 
-      label: 'Crop Advice', 
-      query: 'I need advice on growing maize',
+      label: t.cropAdvice, 
+      query: language === 'en' ? 'I need advice on growing maize' : 'Ninahitaji ushauri wa kupanda mahindi',
       gradient: 'from-emerald-500 to-teal-500',
       bg: 'bg-emerald-50',
       iconBg: 'bg-emerald-100',
@@ -227,8 +288,8 @@ function App() {
     },
     { 
       icon: Cloud, 
-      label: 'Weather', 
-      query: 'What is the weather forecast for my area?',
+      label: t.weather, 
+      query: language === 'en' ? 'What is the weather forecast for my area?' : 'Hali ya hewa itakuwaje eneo langu?',
       gradient: 'from-blue-500 to-cyan-500',
       bg: 'bg-blue-50',
       iconBg: 'bg-blue-100',
@@ -236,8 +297,8 @@ function App() {
     },
     { 
       icon: TrendingUp, 
-      label: 'Market Prices', 
-      query: 'What are the current market prices for maize?',
+      label: t.marketPrices, 
+      query: language === 'en' ? 'What are the current market prices for maize?' : 'Bei za soko za mahindi ni zipi sasa?',
       gradient: 'from-purple-500 to-pink-500',
       bg: 'bg-purple-50',
       iconBg: 'bg-purple-100',
@@ -245,14 +306,19 @@ function App() {
     },
     { 
       icon: AlertCircle, 
-      label: 'Pest Help', 
-      query: 'I have a pest problem on my crops, can you help?',
+      label: t.pestHelp, 
+      query: language === 'en' ? 'I have a pest problem on my crops, can you help?' : 'Nina tatizo la wadudu kwenye mazao yangu, unaweza kusaidia?',
       gradient: 'from-orange-500 to-red-500',
       bg: 'bg-orange-50',
       iconBg: 'bg-orange-100',
       iconColor: 'text-orange-600'
     },
   ];
+
+  const handleLanguageChange = (lang: 'en' | 'sw') => {
+    setLanguage(lang);
+    localStorage.setItem('shambasmart_language', lang);
+  };
 
   return (
     <div className={`min-h-screen bg-gradient-to-br from-slate-50 via-white to-emerald-50/20 transition-all duration-300 ${isPageTransitioning ? 'opacity-0 scale-95' : 'opacity-100 scale-100'}`}>
@@ -269,13 +335,37 @@ function App() {
               </div>
               <div>
                 <h1 className="text-lg font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
-                  ShambaSmart AI
+                  {t.title}
                 </h1>
-                <p className="text-xs text-gray-500">Kenya's Agricultural Advisor</p>
+                <p className="text-xs text-gray-500">{t.subtitle}</p>
               </div>
             </div>
+            <div className="flex items-center gap-2">
+              {/* Language Selector */}
+              <div className="flex items-center bg-gray-100 rounded-lg p-1">
+                <button
+                  onClick={() => handleLanguageChange('en')}
+                  className={`px-3 py-1.5 text-sm font-medium rounded-md transition-all ${
+                    language === 'en' 
+                      ? 'bg-white text-emerald-600 shadow-sm' 
+                      : 'text-gray-600 hover:text-gray-900'
+                  }`}
+                >
+                  EN
+                </button>
+                <button
+                  onClick={() => handleLanguageChange('sw')}
+                  className={`px-3 py-1.5 text-sm font-medium rounded-md transition-all ${
+                    language === 'sw' 
+                      ? 'bg-white text-emerald-600 shadow-sm' 
+                      : 'text-gray-600 hover:text-gray-900'
+                  }`}
+                >
+                  SW
+                </button>
+              </div>
             {phoneNumber && (
-              <button
+                <button
                 onClick={() => {
                   localStorage.removeItem('shambasmart_phone');
                   setPhoneNumber('');
@@ -285,10 +375,11 @@ function App() {
                 }}
                 className="p-2 hover:bg-gray-100 rounded-lg transition-all transform hover:scale-110 active:scale-95"
                 aria-label="Change phone number"
-              >
-                <X className="w-5 h-5 text-gray-500" />
-              </button>
-            )}
+                >
+                  <X className="w-5 h-5 text-gray-500" />
+                </button>
+              )}
+            </div>
           </div>
         </div>
       </header>
@@ -326,10 +417,10 @@ function App() {
                     </div>
                   </div>
                   <h2 className="text-4xl sm:text-5xl font-extrabold mb-4 tracking-tight animate-slide-in">
-                    Welcome to ShambaSmart AI
+                    {t.welcome}
                   </h2>
-                  <p className="text-xl text-white/90 mb-2 animate-fade-in" style={{ animationDelay: '0.2s' }}>Powered by Google Vertex AI</p>
-                  <p className="text-white/80 animate-fade-in" style={{ animationDelay: '0.4s' }}>Your intelligent farming companion</p>
+                  <p className="text-xl text-white/90 mb-2 animate-fade-in" style={{ animationDelay: '0.2s' }}>{t.poweredBy}</p>
+                  <p className="text-white/80 animate-fade-in" style={{ animationDelay: '0.4s' }}>{t.companion}</p>
                 </div>
               </div>
               
@@ -338,7 +429,7 @@ function App() {
                 <div className="mb-8">
                   <label className="block text-sm font-semibold text-gray-700 mb-4 flex items-center gap-2">
                     <Phone className="w-5 h-5 text-emerald-600" />
-                    Enter your Kenyan phone number
+                    {t.enterPhone}
                   </label>
                   <div className="flex flex-col sm:flex-row gap-3">
                     <input
@@ -365,7 +456,7 @@ function App() {
                       className="px-8 py-4 bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-xl hover:from-emerald-700 hover:to-teal-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95 disabled:transform-none flex items-center justify-center gap-2 min-h-[56px] relative overflow-hidden group"
                     >
                       <span className="relative z-10 flex items-center gap-2">
-                        Get Started
+                        {t.getStarted}
                         <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                       </span>
                       <div className="absolute inset-0 bg-gradient-to-r from-emerald-400 to-teal-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
@@ -374,14 +465,14 @@ function App() {
                   {phoneInput && !isValidPhoneNumber(phoneInput) && (
                     <div className="mt-3 flex items-center gap-2 text-sm text-red-600 bg-red-50 p-3 rounded-lg border border-red-200">
                       <AlertCircle className="w-4 h-4 flex-shrink-0" />
-                      <span>Please enter a valid Kenyan phone number (e.g., +254700000000)</span>
+                      <span>{t.invalidPhone}</span>
                     </div>
                   )}
                 </div>
                 
                 {/* Quick Actions */}
                 <div className="border-t border-gray-200 pt-8">
-                  <p className="text-sm font-semibold text-gray-700 text-center mb-6 uppercase tracking-wide">Quick Actions</p>
+                  <p className="text-sm font-semibold text-gray-700 text-center mb-6 uppercase tracking-wide">{t.quickActions}</p>
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                     {quickActions.map((action, idx) => (
                       <button
@@ -407,15 +498,15 @@ function App() {
                   <div className="flex flex-col sm:flex-row items-center justify-center gap-6 text-sm text-gray-600">
                     <div className="flex items-center gap-2">
                       <Shield className="w-4 h-4 text-emerald-600" />
-                      <span>Secure & Private</span>
+                      <span>{t.secure}</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <Zap className="w-4 h-4 text-emerald-600" />
-                      <span>Powered by Vertex AI</span>
+                      <span>{t.poweredBy}</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <Globe className="w-4 h-4 text-emerald-600" />
-                      <span>Available 24/7</span>
+                      <span>{t.available}</span>
                     </div>
                   </div>
                 </div>
@@ -432,12 +523,12 @@ function App() {
                   <User className="w-5 h-5 text-white" />
                 </div>
                 <div>
-                  <p className="text-xs text-gray-500 font-medium uppercase tracking-wide">Active Session</p>
+                  <p className="text-xs text-gray-500 font-medium uppercase tracking-wide">{t.activeSession}</p>
                   <p className="text-sm font-bold text-gray-900 flex items-center gap-2">
                     {phoneNumber}
                     <span className="inline-flex items-center gap-1.5 text-xs font-semibold bg-emerald-100 text-emerald-700 px-2.5 py-1 rounded-full animate-pulse">
                       <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-ping"></div>
-                      Online
+                      {t.online}
                     </span>
                   </p>
                 </div>
@@ -448,7 +539,7 @@ function App() {
             <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
               <h3 className="font-bold mb-4 text-gray-900 flex items-center gap-2">
                 <Zap className="w-5 h-5 text-emerald-600" />
-                Quick Actions
+                {t.quickActions}
               </h3>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                 {quickActions.map((action, idx) => (
@@ -484,9 +575,9 @@ function App() {
                         <MessageCircle className="w-16 h-16 text-white" />
                       </div>
                     </div>
-                    <h3 className="text-2xl font-bold text-gray-900 mb-3">Start Your Conversation</h3>
+                    <h3 className="text-2xl font-bold text-gray-900 mb-3">{t.startConversation}</h3>
                     <p className="text-gray-600 max-w-md text-base leading-relaxed mb-6">
-                      Ask me anything about farming, crops, livestock, weather, or market prices.
+                      {t.askAnything}
                     </p>
                     <div className="flex flex-wrap gap-2 justify-center">
                       {['🌾 Crop Advice', '🌤️ Weather', '💰 Market Prices', '🐛 Pest Help'].map((tag, i) => (
@@ -559,7 +650,7 @@ function App() {
                       value={input}
                       onChange={(e) => setInput(e.target.value)}
                       onKeyPress={handleKeyPress}
-                      placeholder="Ask your farming question..."
+                      placeholder={t.askPlaceholder}
                       className="w-full px-5 py-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all text-base font-medium placeholder:text-gray-400 hover:border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed bg-gray-50 focus:bg-white"
                       disabled={isLoading}
                     />
@@ -577,14 +668,14 @@ function App() {
                     ) : (
                       <>
                         <Send className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                        <span className="hidden sm:inline">Send</span>
+                        <span className="hidden sm:inline">{t.send}</span>
                       </>
                     )}
                     </span>
                   </button>
                 </div>
                 <p className="text-xs text-gray-500 mt-3 text-center">
-                  Powered by <span className="font-semibold text-emerald-600">Google Vertex AI</span> • Responses are AI-generated
+                  {t.poweredBy} • {t.aiGenerated}
                 </p>
               </div>
             </div>
@@ -599,7 +690,7 @@ function App() {
             <Sparkles className="w-5 h-5 text-emerald-600" />
             <p className="font-semibold text-gray-700">Powered by Google Vertex AI & Gemini</p>
           </div>
-          <p className="text-sm text-gray-500">© {new Date().getFullYear()} ShambaSmart AI - Empowering Kenyan Farmers with AI Technology</p>
+          <p className="text-sm text-gray-500">© {new Date().getFullYear()} ShambaSmart AI - {t.footer}</p>
         </div>
       </footer>
     </div>
