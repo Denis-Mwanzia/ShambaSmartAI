@@ -11,7 +11,7 @@ export class WebChannel extends BaseChannel {
     // API endpoint for web frontend
     app.post('/api/chat', async (req: Request, res: Response): Promise<void> => {
       try {
-        const { phoneNumber, message } = req.body;
+        const { phoneNumber, message, language } = req.body;
         
         if (!phoneNumber || !message) {
           res.status(400).json({ error: 'phoneNumber and message are required' });
@@ -23,6 +23,7 @@ export class WebChannel extends BaseChannel {
           from: phoneNumber,
           content: message,
           timestamp: new Date(),
+          metadata: { language: language || 'en' },
         });
         
         res.json({ response });
