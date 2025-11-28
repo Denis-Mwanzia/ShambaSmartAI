@@ -15,7 +15,10 @@ interface Message {
   direction: 'inbound' | 'outbound';
 }
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
+const API_URL = import.meta.env.VITE_API_URL || 
+  (import.meta.env.PROD 
+    ? 'https://shambasmart-ai-896121198699.us-central1.run.app'
+    : 'http://localhost:8080');
 
 function App() {
   const [messages, setMessages] = useState<Message[]>([]);
