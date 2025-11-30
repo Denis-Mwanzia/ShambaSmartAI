@@ -99,6 +99,13 @@ ShambaSmartAI/
    GOOGLE_CLOUD_PROJECT_ID=your-project-id
    GOOGLE_API_KEY=your-api-key
    FIRESTORE_DATABASE_ID=(default)
+   
+   # Optional: Redis caching (falls back to in-memory if not set)
+   REDIS_URL=redis://localhost:6379
+   # OR
+   REDIS_HOST=localhost
+   REDIS_PORT=6379
+   REDIS_PASSWORD=your-password
    ```
 
 3. **Run Development Server**
