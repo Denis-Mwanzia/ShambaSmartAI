@@ -2,6 +2,7 @@ import { Express, Request, Response } from 'express';
 import { BaseChannel } from './base-channel';
 import axios from 'axios';
 import { logger } from '../utils/logger';
+import { webhookRateLimiter } from '../middleware/rate-limiter';
 
 export class WhatsAppChannel extends BaseChannel {
   name = 'WhatsApp';
@@ -31,8 +32,8 @@ export class WhatsAppChannel extends BaseChannel {
       }
     });
 
-    // Webhook handler
-    app.post('/webhook/whatsapp', async (req: Request, res: Response) => {
+    // Webhook handler (with webhook rate limiting)
+    app.post('/webhook/whatsapp', webhookRateLimiter, async (req: Request, res: Response) => {
       try {
         const body = req.body;
         

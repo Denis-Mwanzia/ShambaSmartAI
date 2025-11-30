@@ -3,6 +3,7 @@ import { BaseChannel } from './base-channel';
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const AfricasTalking = require('africastalking');
 import { logger } from '../utils/logger';
+import { webhookRateLimiter } from '../middleware/rate-limiter';
 
 export class SMSChannel extends BaseChannel {
   name = 'SMS';
@@ -22,8 +23,8 @@ export class SMSChannel extends BaseChannel {
   }
 
   setupRoutes(app: Express): void {
-    // Inbound SMS webhook
-    app.post('/webhook/sms', async (req: Request, res: Response) => {
+    // Inbound SMS webhook (with webhook rate limiting)
+    app.post('/webhook/sms', webhookRateLimiter, async (req: Request, res: Response) => {
       try {
         const { from, text } = req.body;
         

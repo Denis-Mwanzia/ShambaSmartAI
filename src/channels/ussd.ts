@@ -1,13 +1,14 @@
 import { Express, Request, Response } from 'express';
 import { BaseChannel } from './base-channel';
 import { logger } from '../utils/logger';
+import { webhookRateLimiter } from '../middleware/rate-limiter';
 
 export class USSDChannel extends BaseChannel {
   name = 'USSD';
   
   setupRoutes(app: Express): void {
-    // USSD session handler
-    app.post('/webhook/ussd', async (req: Request, res: Response) => {
+    // USSD session handler (with webhook rate limiting)
+    app.post('/webhook/ussd', webhookRateLimiter, async (req: Request, res: Response) => {
       try {
         const { phoneNumber, text, sessionId } = req.body;
         

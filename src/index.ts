@@ -10,6 +10,7 @@ import { setupWebRoutes } from './channels/web';
 import { logger } from './utils/logger';
 import { dataSourceService } from './services/data-source';
 import { startAlertScheduler } from './services/alerts';
+import { apiRateLimiter } from './middleware/rate-limiter';
 
 dotenv.config();
 
@@ -20,6 +21,9 @@ const PORT = process.env.PORT || 8080;
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Apply general API rate limiting
+app.use(apiRateLimiter);
 
 // Initialize Genkit
 initializeGenkit();

@@ -3,13 +3,14 @@ import { Express, Request, Response } from 'express';
 import { BaseChannel } from './base-channel';
 import { databaseService } from '../services/database';
 import { logger } from '../utils/logger';
+import { chatRateLimiter, locationRateLimiter } from '../middleware/rate-limiter';
 
 export class WebChannel extends BaseChannel {
   name = 'Web';
   
   setupRoutes(app: Express): void {
-    // API endpoint for web frontend
-    app.post('/api/chat', async (req: Request, res: Response): Promise<void> => {
+    // API endpoint for web frontend (with chat rate limiting)
+    app.post('/api/chat', chatRateLimiter, async (req: Request, res: Response): Promise<void> => {
       try {
         const { phoneNumber, message, language } = req.body;
         
@@ -57,8 +58,8 @@ export class WebChannel extends BaseChannel {
       }
     });
 
-    // Update user location
-    app.post('/api/user/location', async (req: Request, res: Response): Promise<void> => {
+    // Update user location (with location rate limiting)
+    app.post('/api/user/location', locationRateLimiter, async (req: Request, res: Response): Promise<void> => {
       try {
         const { phoneNumber, latitude, longitude } = req.body;
         
