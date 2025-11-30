@@ -82,9 +82,14 @@ ShambaSmart AI is a multi-agent, multi-channel agricultural advisory system buil
 
 #### Voice Channel
 - **Integration**: Twilio
-- **Features**: Speech-to-text, text-to-speech
+- **Features**: Speech-to-text, text-to-speech, bilingual support (English/Kiswahili)
 - **Webhook**: `/webhook/voice`
 - **Use Case**: Low-literacy users, hands-free access
+- **Enhanced Features**:
+  - Automatic language detection based on user preference
+  - Natural conversation flow with follow-up questions
+  - DTMF (keypad) input support
+  - Enhanced speech recognition with phone_call model
 
 #### Web Dashboard
 - **Technology**: React + Tailwind CSS + PWA
@@ -251,13 +256,20 @@ The orchestrator coordinates multiple specialized agents:
 2. **Webhook Verification**: Token-based for WhatsApp
 3. **Input Validation**: Zod schemas
 4. **Error Handling**: Graceful degradation
-5. **Rate Limiting**: (To be implemented)
+5. **Rate Limiting**: ✅ Implemented with express-rate-limit
+   - API endpoints: 100 requests per 15 minutes
+   - Chat endpoints: 20 requests per minute
+   - Webhook endpoints: 200 requests per 5 minutes
+   - Location updates: 10 requests per 10 minutes
 6. **Data Privacy**: User data encryption
 
 ## Scalability
 
 1. **Horizontal Scaling**: Cloud Run auto-scaling
-2. **Caching**: (To be implemented - Redis)
+2. **Caching**: ✅ Redis with in-memory fallback
+   - Redis cache for distributed systems
+   - Automatic fallback to in-memory cache if Redis unavailable
+   - Configurable via REDIS_URL or REDIS_HOST environment variables
 3. **Database**: Firestore auto-scaling
 4. **CDN**: For static assets
 5. **Load Balancing**: Cloud Run handles
