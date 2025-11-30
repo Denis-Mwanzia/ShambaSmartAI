@@ -1,7 +1,7 @@
 // Helper to generate text using Vertex AI (preferred) or Google Generative AI (fallback)
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { logger } from './logger';
-import { responseCache } from './response-cache';
+import { redisCache } from './redis-cache';
 
 // Clean response to remove Q&A formatting
 function cleanResponse(text: string): string {
@@ -34,7 +34,7 @@ export async function generateText(
   try {
     // Check cache first (only for non-conversational prompts)
     if (useCache && prompt.length < 500) { // Only cache shorter prompts to avoid caching conversation history
-      const cached = responseCache.get(prompt);
+      const cached = await redisCache.get(prompt);
       if (cached) {
         return cached;
       }
@@ -58,7 +58,7 @@ export async function generateText(
         
         // Cache the response if caching is enabled
         if (useCache && prompt.length < 500) {
-          responseCache.set(prompt, result);
+          await redisCache.set(prompt, result);
         }
         
         return result;
@@ -138,7 +138,7 @@ export async function generateText(
       
       // Cache the response if caching is enabled
       if (useCache && prompt.length < 500) {
-        responseCache.set(prompt, text);
+        await redisCache.set(prompt, text);
       }
     }
     
