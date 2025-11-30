@@ -1,7 +1,5 @@
 # ShambaSmart AI - Architecture Documentation
 
-🌐 **Live Demo**: https://shambasmart-ai-896121198699.us-central1.run.app
-
 ## System Overview
 
 ShambaSmart AI is a multi-agent, multi-channel agricultural advisory system built for Kenyan farmers. It leverages Google Genkit, Vertex AI (Gemini 2.0), and ADK to provide personalized, real-time agricultural intelligence accessible through WhatsApp, SMS, USSD, Voice, and Web channels.

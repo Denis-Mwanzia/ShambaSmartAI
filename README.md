@@ -2,7 +2,11 @@
 
 **Kenya's AI-Powered Agricultural Advisor for Every Farmer**
 
-🌐 **Live Demo**: https://shambasmart-ai-896121198699.us-central1.run.app
+🌐 **Live Demo**: 
+- **Frontend**: https://shambasmartai-dbd7f.web.app
+- **Backend API**: https://shambasmart-ai-896121198699.us-central1.run.app
+
+📊 **Pitch Deck**: [View Presentation](https://prezi.com/view/eR9b1TOs5DzZ8kKKJwlh/?referral_token=nM2KE4lnB3FN)
 
 ## Overview
 

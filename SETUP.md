@@ -1,6 +1,10 @@
 # ShambaSmart AI - Setup Guide
 
-🌐 **Live Demo**: https://shambasmart-ai-896121198699.us-central1.run.app
+🌐 **Live Demo**: 
+- **Frontend**: https://shambasmartai-dbd7f.web.app
+- **Backend API**: https://shambasmart-ai-896121198699.us-central1.run.app
+
+📊 **Pitch Deck**: [View Presentation](https://prezi.com/view/eR9b1TOs5DzZ8kKKJwlh/?referral_token=nM2KE4lnB3FN)
 
 This guide will walk you through setting up ShambaSmart AI from scratch. Follow the steps in order.
 

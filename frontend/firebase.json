@@ -1,6 +1,6 @@
 {
   "hosting": {
-    "site": "vertexai-476716",
+    "site": "shambasmartai-dbd7f",
     "public": "dist",
     "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
     "rewrites": [
